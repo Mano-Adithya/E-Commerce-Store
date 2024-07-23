@@ -1,4 +1,4 @@
-# E-Commerce-Store Documentation
+# E-Commerce-Store Documentatio
 
 This document outlines the architecture and key components of an E-commerce store designed with a microservice architecture. The system leverages various AWS services for deployment, ensuring scalability, reliability, and efficiency.
 
