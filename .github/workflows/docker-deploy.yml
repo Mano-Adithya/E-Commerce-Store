@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,8 +27,7 @@ jobs:
           SERVICES=("account" "cart" "inventory" "order-status" "payment" "place-order" "product-review" "recommendation" "recommendation-generation" "search" "shipping")
           for SERVICE in "${SERVICES[@]}"
           do
-            echo "Building $SERVICE"
-            docker-compose -f server/microservices/docker-compose.yml -f server/microservices/docker-compose.prod.yml build $SERVICE
-            echo "Tagging and Pushing $SERVICE"
-            docker-compose -f server/microservices/docker-compose.yml -f server/microservices/docker-compose.prod.yml push $SERVICE
+            echo "Building and Pushing $SERVICE"
+            docker build -t ${{ secrets.DOCKER_USERNAME }}/$SERVICE:latest -f ./server/microservices/$SERVICE/Dockerfile ./server/microservices/$SERVICE
+            docker push ${{ secrets.DOCKER_USERNAME }}/$SERVICE:latest
           done
