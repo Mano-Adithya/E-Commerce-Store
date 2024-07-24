@@ -1,241 +1,33 @@
-name: Run Tests
+name: Deploy to EC2
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  # client-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./client
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-
-  #     - name: Install dependencies
-  #       run: npm ci
-
-  #     - name: Run tests
-  #       run: npm test
-  #       env:
-
-  api-gateway-tests:
+  deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server/api-gateway
+
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
         with:
-          node-version: "20.x"
+          ssh-private-key: ${{ secrets.EC2_KEY }}
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-          ACCOUNT_SERVICE_BASE_URL: ${{ secrets.ACCOUNT_SERVICE_BASE_URL }}
-          CART_SERVICE_BASE_URL: ${{ secrets.CART_SERVICE_BASE_URL }}
-          INVENTORY_SERVICE_BASE_URL: ${{ secrets.INVENTORY_SERVICE_BASE_URL }}
-          ORDER_STATUS_SERVICE_BASE_URL: ${{ secrets.ORDER_STATUS_SERVICE_BASE_URL }}
-          PAYMENT_SERVICE_BASE_URL: ${{ secrets.PAYMENT_SERVICE_BASE_URL }}
-          PLACE_ORDER_SERVICE_BASE_URL: ${{ secrets.PLACE_ORDER_SERVICE_BASE_URL }}
-          PRODUCT_REVIEW_SERVICE_BASE_URL: ${{ secrets.PRODUCT_REVIEW_SERVICE_BASE_URL }}
-          RECOMMENDATION_GENERATION_SERVICE_BASE_URL: ${{ secrets.RECOMMENDATION_GENERATION_SERVICE_BASE_URL }}
-          RECOMMENDATION_SERVICE_BASE_URL: ${{ secrets.RECOMMENDATION_SERVICE_BASE_URL }}
-          SEARCH_SERVICE_BASE_URL: ${{ secrets.SEARCH_SERVICE_BASE_URL }}
-          SHIPPING_SERVICE_BASE_URL: ${{ secrets.SHIPPING_SERVICE_BASE_URL }}
-
-  # account-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/account
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # cart-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/cart
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # inventory-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/inventory
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # order-status-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/order-status
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # payment-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/payment
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # place-order-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/place-order
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # product-review-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/product-review
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # recommendation-generation-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/recommendation-generation
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # recommendation-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/recommendation
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # search-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/search
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  #         PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
-
-  # shipping-service-tests:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./server/microservices/shipping
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.x"
-  #     - run: npm ci
-  #     - run: npm test
-  #       env:
-  #         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          # PG_BASE_CONNECTIONSTRING: ${{ secrets.PG_BASE_CONNECTIONSTRING }}
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            SERVICES=("account" "cart" "inventory" "order-status" "payment" "place-order" "product-review" "recommendation" "recommendation-generation" "search" "shipping")
+            for SERVICE in "${SERVICES[@]}"
+            do
+              docker pull ${{ secrets.DOCKER_USERNAME }}/$SERVICE:latest
+              docker stop $SERVICE || true
+              docker rm $SERVICE || true
+              docker run -d --name $SERVICE -p [PORT_MAPPING] ${{ secrets.DOCKER_USERNAME }}/$SERVICE:latest
+            done
+          EOF
